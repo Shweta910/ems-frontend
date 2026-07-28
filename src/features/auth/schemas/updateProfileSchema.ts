@@ -13,10 +13,13 @@ export const updateProfileSchema = z.object({
 
   phone: z.string().trim().min(10, "Phone number is required."),
 
-  avatar: z.preprocess(
-    (value) => (value === "" ? undefined : value),
-    z.string().url("Avatar must be a valid URL.").optional(),
-  ),
+  avatar: z
+    .string()
+    .trim()
+    .optional()
+    .refine((value) => !value || /^https?:\/\/.+/.test(value), {
+      message: "Avatar must be a valid URL.",
+    }),
 
   dateOfBirth: z.string().min(1, "Date of birth is required."),
 });

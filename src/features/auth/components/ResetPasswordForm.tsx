@@ -1,9 +1,10 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
-import PasswordInput from "@/components/form/PasswordInput";
 import SubmitButton from "@/components/form/SubmitButton";
+
+import PasswordInput from "./PasswordInput";
 
 import {
   resetPasswordSchema,
@@ -13,11 +14,12 @@ import {
 import { useResetPassword } from "../hooks/useResetPassword";
 
 export default function ResetPasswordForm() {
-  const { mutate, isPending } = useResetPassword();
-
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
-  const token = searchParams.get("token") ?? "";
+  const token = searchParams.get("token");
+
+  const { mutate, isPending } = useResetPassword();
 
   const {
     register,
@@ -36,23 +38,18 @@ export default function ResetPasswordForm() {
       return;
     }
 
-    mutate({
-      token,
-      password: values.password,
-    });
-  };
-
-  if (!token) {
-    return (
-      <div className="text-center">
-        <h2 className="text-xl font-semibold">Invalid or Expired Reset Link</h2>
-
-        <p className="mt-2 text-muted-foreground">
-          Please request a new password reset link.
-        </p>
-      </div>
+    mutate(
+      {
+        token,
+        password: values.password,
+      },
+      {
+        onSuccess: () => {
+          navigate("/login");
+        },
+      },
     );
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -72,11 +69,7 @@ export default function ResetPasswordForm() {
         error={errors.confirmPassword?.message}
       />
 
-      <SubmitButton
-        loading={isPending}
-        title="Reset Password"
-        loadingTitle="Resetting Password..."
-      />
+      <SubmitButton loading={isPending}>Reset Password</SubmitButton>
     </form>
   );
 }

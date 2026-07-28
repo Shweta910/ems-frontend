@@ -36,11 +36,7 @@ export default function ForgotPasswordForm() {
         error={errors.email?.message}
       />
 
-      <SubmitButton
-        loading={isPending}
-        title="Send Reset Link"
-        loadingTitle="Sending..."
-      />
+      <SubmitButton loading={isPending}>Send Reset Link</SubmitButton>
     </form>
   );
 }

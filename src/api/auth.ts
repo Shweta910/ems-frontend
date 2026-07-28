@@ -6,6 +6,7 @@ import type {
   LoginResponse,
   RegisterRequest,
   RegisterResponse,
+  ChangePasswordRequest,
 } from "@/features/auth/types/auth";
 
 export async function login(payload: LoginRequest): Promise<LoginResponse> {

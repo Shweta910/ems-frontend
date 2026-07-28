@@ -1,14 +1,10 @@
 import { useState } from "react";
-import type { InputHTMLAttributes } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
-import FormError from "./FormError";
-
-interface PasswordInputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label: string;
+interface PasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
   error?: string;
 }
 
@@ -16,26 +12,49 @@ export default function PasswordInput({
   id,
   label,
   error,
+  className,
   ...props
 }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="space-y-2">
-      <Label htmlFor={id}>{label}</Label>
+      {label && (
+        <label htmlFor={id} className="text-sm font-medium text-gray-700">
+          {label}
+        </label>
+      )}
 
       <div className="relative">
-        <Input id={id} type={showPassword ? "text" : "password"} {...props} />
+        <input
+          id={id}
+          type={showPassword ? "text" : "password"}
+          className={cn(
+            "w-full rounded-md border px-3 py-2 pr-10",
+            "focus:outline-none focus:ring-2 focus:ring-purple-500",
+            error && "border-red-500",
+            className,
+          )}
+          {...props}
+        />
 
         <button
           type="button"
           onClick={() => setShowPassword((prev) => !prev)}
-          className="absolute right-3 top-2">
+          className="
+            absolute
+            right-3
+            top-1/2
+            -translate-y-1/2
+            text-gray-500
+            hover:text-gray-700
+          "
+          aria-label={showPassword ? "Hide password" : "Show password"}>
           {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
         </button>
       </div>
 
-      <FormError message={error} />
+      {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
   );
 }

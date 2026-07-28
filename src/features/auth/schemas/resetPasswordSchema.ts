@@ -4,11 +4,11 @@ export const resetPasswordSchema = z
   .object({
     password: z.string().min(8, "Password must be at least 8 characters"),
 
-    confirmPassword: z.string(),
+    confirmPassword: z.string().min(8, "Confirm password is required"),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
     message: "Passwords do not match",
+    path: ["confirmPassword"],
   });
 
 export type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;

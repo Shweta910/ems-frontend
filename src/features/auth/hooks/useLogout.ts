@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -29,7 +30,12 @@ export default function useLogout() {
     },
 
     onError: (error: unknown) => {
-      toast.error(error?.response?.data?.message ?? "Unable to logout.");
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message ?? "Logout failed");
+        return;
+      }
+
+      toast.error("Logout failed");
     },
   });
 }
